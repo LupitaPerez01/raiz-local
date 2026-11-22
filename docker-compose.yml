@@ -1,0 +1,61 @@
+
+services:
+
+  # Servicio de la aplicacion web
+  app:
+    build: .
+    container_name: raiz_local_app
+    ports:
+      - "8080:80"
+
+    # Variables de conexion para Docker
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_DOCKER_USER}
+      DB_PASSWORD: ${DB_DOCKER_PASSWORD}
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - raiz_network
+
+  # Servicio de base de datos
+  db:
+    image: mysql:8.0
+    container_name: raiz_local_db
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_DOCKER_USER}
+      MYSQL_PASSWORD: ${DB_DOCKER_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+
+    # Persistencia de la base de datos
+    volumes:
+      - db_data:/var/lib/mysql
+
+      # Importacion inicial del respaldo SQL
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+
+    # Comprobar que MySQL este disponible
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - raiz_network
+
+# Red de comunicacion
+networks:
+  raiz_network:
+    driver: bridge
+
+# Almacenamiento persistente
+volumes:
+  db_data:

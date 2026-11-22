@@ -1,0 +1,23 @@
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Dependencias
+/vendor/
+
+# Base de datos con información personal
+/database/init/raiz_local.sql
+
+# Configuración del editor
+.vscode/
+.idea/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+assets/img/productos/

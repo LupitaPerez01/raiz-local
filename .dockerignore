@@ -1,0 +1,19 @@
+
+# Git
+.git
+.gitignore
+
+# Credenciales
+.env
+.env.*
+
+# Dependencias locales
+/vendor/
+
+# Configuraciones del editor
+.vscode/
+.idea/
+
+# Archivos temporales
+*.log
+*.tmp
